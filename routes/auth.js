@@ -45,4 +45,24 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Update Subscription Route
+router.post('/update-subscription', async (req, res) => {
+  const { userId, subscriptionPlan, subscriptionExpiration } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+
+    user.subscriptionPlan = subscriptionPlan; // 'monthly' or 'yearly'
+    user.subscriptionExpiration = subscriptionExpiration;
+    await user.save();
+
+    res.json({ msg: 'Subscription updated successfully', user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+
 module.exports = router;
